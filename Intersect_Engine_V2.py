@@ -113,7 +113,7 @@ class IntersectEngine(mglw.WindowConfig):
 
     def _setup_icon(self):
         try:
-            icon_path = getattr(self, "icon_path", "C:/Users/bendy/Desktop/INTERSECT Files/ICOs/Intersect Logo.ico")
+            icon_path = getattr(self, "icon_path", "assets/Intersect Logo.ico")
             icon_path = Path(icon_path)
             if icon_path.exists():
                 icon = image.load(str(icon_path))
@@ -189,16 +189,7 @@ class IntersectEngine(mglw.WindowConfig):
 
         return [[(v[0] - min_x) / width, (v[1] - min_y) / height] for v in vertices]
 
-    def _create_test_texture(self, name="autogen_texture.png"):
-        path = Path(name)
-        if not path.exists():
-            color = tuple(randint(50, 200) for _ in range(3)) + (255,)
-            img = Image.new("RGBA", (64, 64), color)
-            img.save(path)
-        return name
-
     def set_mesh(self, object_id, faces, uvs=None, texture=None, color=None):
-        """Create VAOs for each face and store them using a unique id."""
         for face_id, verts in faces.items():
             mesh_id = f"{object_id}:{face_id}"
             vertices = np.asarray(verts, dtype=np.float32)
@@ -422,14 +413,6 @@ class Element:
                         # Ensure RGBA has exactly 4 values
                         while len(self.colour[face_id]) < 4:
                             self.colour[face_id].append(1.0 if len(self.colour[face_id]) == 3 else 0.5)
-
-
-    @property
-    def vertices(self):
-        verts = []
-        for face in self.faces.values():
-            verts.extend(face)
-        return np.array(verts, dtype='f4')
 
     def get_homography_matrix(self):
         r = 0
