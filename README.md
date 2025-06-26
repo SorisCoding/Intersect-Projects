@@ -33,7 +33,7 @@ but it will hopefully make modding easier and allow for better, more cool mods i
 
 Modularity will run on the PyAPI app as its first python mod, its more of a demonstration mod on what PyAPI can do.
 Modularity will be a networking and redstone mod, taking inspiration from ComputerCraft and Project:
-Red, hopefully Modularity will fix and improve upon the sort comings of current network and redstone mods,
+Red, hopefully Modularity will fix and improve upon the shortcomings of the current network and redstone mods,
 and it can do so due to PyAPI.
 It won't be as realistic as CC and Project:
 Red but will hopefully be one of the most efficient and useful networking and redstone mods out there.
@@ -65,5 +65,7 @@ use these programs at your own discretion since I can NOT guarantee that they wi
 I do not mind if you use my projects or adapt them into their own thing,
 just please make sure to credit me and make a clear distinction between my project and yours.
 
-If you have any suggesting or want to contribute to certain projects, please just ask me on discord (soriscode).
+If you have any suggestions or want to contribute to certain projects, please just ask me on discord (soriscode).
 Just don't expect much since I'm not used to working with other people.
+
+(dear god this README is long and boring, thanks if you read it all :3)
