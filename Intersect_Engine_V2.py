@@ -197,24 +197,37 @@ class IntersectEngine(mglw.WindowConfig):
         return name
 
     def set_mesh(self, object_id, faces, uvs=None, texture=None, color=None):
-        face_ids = list(faces.keys())
-        faces = list(faces.values())
-        for vertices in range(len(faces)):
-            object_id = face_ids[vertices]
-            vertices = np.asarray(faces[vertices], dtype=np.float32)
-            if texture is None and color is None:
-                color = (random(), random(), random(), 1.0)
+        """Create VAOs for each face and store them using a unique id."""
+        for face_id, verts in faces.items():
+            mesh_id = f"{object_id}:{face_id}"
+            vertices = np.asarray(verts, dtype=np.float32)
+
+            face_uvs = None
+            if isinstance(uvs, dict):
+                face_uvs = uvs.get(face_id)
+            elif uvs is not None:
+                face_uvs = uvs
+
+            face_color = None
+            if isinstance(color, dict):
+                face_color = color.get(face_id)
+            else:
+                face_color = color
+
+            if texture is None and face_color is None:
+                face_color = (random(), random(), random(), 1.0)
 
             vertices = self.coord_scaling(vertices, self.wnd.width, self.wnd.height)
 
-            if uvs is None:
-                uvs = self._generate_uvs(vertices.tolist())
+            if face_uvs is None:
+                face_uvs = self._generate_uvs(vertices.tolist())
+
             vbo_data = vertices.astype('f4').tobytes()
 
-            if isinstance(uvs, (list, np.ndarray)):
+            if isinstance(face_uvs, (list, np.ndarray)):
                 try:
-                    uvs = np.array(uvs, dtype='f4')
-                    uvbo_data = uvs.tobytes()
+                    face_uvs = np.array(face_uvs, dtype='f4')
+                    uvbo_data = face_uvs.tobytes()
                     vbo = self.ctx.buffer(vbo_data)
                     uvbo = self.ctx.buffer(uvbo_data)
                     vao = self.ctx.vertex_array(self.prog, [
@@ -222,7 +235,7 @@ class IntersectEngine(mglw.WindowConfig):
                         (uvbo, '2f', 'in_uv'),
                     ])
                 except Exception as e:
-                    print(f"⚠️ Invalid UVs for {object_id}: {uvs} →", e)
+                    print(f"⚠️ Invalid UVs for {mesh_id}: {face_uvs} →", e)
                     vbo = self.ctx.buffer(vbo_data)
                     vao = self.ctx.vertex_array(self.prog, [
                         (vbo, '3f', 'in_pos'),
@@ -234,7 +247,7 @@ class IntersectEngine(mglw.WindowConfig):
                 ])
 
             tex_obj = None
-            if texture and not color:
+            if texture and face_color is None:
                 try:
                     if texture not in self._texture_cache:
                         self._texture_cache[texture] = self.load_texture_2d(texture)
@@ -242,7 +255,7 @@ class IntersectEngine(mglw.WindowConfig):
                 except Exception as e:
                     print(f"⚠️ Texture Load Failed ({texture}):", e)
 
-            self.meshes[object_id] = (vao, len(vertices), self.ctx.TRIANGLE_FAN, tex_obj, color)
+            self.meshes[mesh_id] = (vao, len(vertices), self.ctx.TRIANGLE_FAN, tex_obj, face_color)
 
     def remove_mesh(self, object_id):
         if object_id in self.meshes:
@@ -255,24 +268,30 @@ class IntersectEngine(mglw.WindowConfig):
             ids = list(registry.keys())
             for i in ids:
                 self.set_mesh(i, registry[i].faces, registry[i].uvs, registry[i].texture, registry[i].colour)
-            for i in list(self.meshes.keys()):
-                if i not in registry.keys():
-                    self.remove_mesh(i)
+            for mesh_id in list(self.meshes.keys()):
+                element_id = mesh_id.split(":", 1)[0]
+                try:
+                    element_id = int(element_id)
+                except ValueError:
+                    pass
+                if element_id not in registry.keys():
+                    self.remove_mesh(mesh_id)
 
-        for oid, (vao, count, mode, texture, color) in self.meshes.items():
+        for mesh_id, (vao, count, mode, texture, color) in self.meshes.items():
+            oid = mesh_id.split(":", 1)[0]
+            try:
+                oid_int = int(oid)
+            except ValueError:
+                oid_int = oid
             self.prog["modelViewProj"].write(self.static_proj.tobytes())
             self.prog["tex"].value = 0
             try:
-                if isinstance(color, dict):
-                    # Get the first color entry
-                    color = list(color.values())[0]
                 self.prog["use_color"].value = tuple(color)
             except Exception as e:
-                print(f"⚠️ Color assignment failed for {oid}: {color} →", e)
+                print(f"⚠️ Color assignment failed for {mesh_id}: {color} →", e)
                 self.prog["use_color"].value = (random(), random(), random(), 1.0)
 
-
-            element = self.get_element(oid)
+            element = self.get_element(oid_int)
             if element:
                 H = element.get_homography_matrix()
                 self.prog["homography"].write(H.tobytes())
@@ -288,8 +307,10 @@ class IntersectEngine(mglw.WindowConfig):
         return registry.get(id)
 
     def set_element_homography(self, element_id, matrix3x3):
-        if element_id in self.meshes:
-            self.default_homography = matrix3x3.astype('f4')
+        for mesh_id in self.meshes:
+            if str(mesh_id).startswith(f"{element_id}:"):
+                self.default_homography = matrix3x3.astype('f4')
+                break
 
     def coord_scaling(self, vertices, width, height):
         for i in range(len(vertices)):
