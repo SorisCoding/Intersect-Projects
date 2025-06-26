@@ -1,6 +1,6 @@
-<h1> Intersect V2 Projects </h1>
+<h1> Intersect Projects </h1>
 
-Intersect V2 itself is a planned project not yet in development, this repo is mostly for Intersect related projects that will either eventually be used for Intersect V2 or side projects which will have their own repo if they get big enough.
+This page is for any and all Intersect Projects or Intersect Side Projects (some projects might have their own dedicated repo and you will be able to find their links here).
 
 <h2>Current Projects in Development:</h2>
 
@@ -15,8 +15,6 @@ Intersect V2 itself is a planned project not yet in development, this repo is mo
 
     ~ Intersect V2
 
-
-for some context on the projects since you probably won't know what they are at first:
 
 <h3>PyAPI</h3> 
 
