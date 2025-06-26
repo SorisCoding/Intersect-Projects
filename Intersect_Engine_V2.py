@@ -1,3 +1,4 @@
+#little reminder, do expect weird glitches and bugs since it is a prototype engine after all
 try:
     import threading
     import json

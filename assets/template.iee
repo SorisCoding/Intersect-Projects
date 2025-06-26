@@ -1,0 +1,31 @@
+#the purpose of .iee or .ie_e (which is Intersect Engine Element) is so that the engine doesnt need to calculate .obj files everytime it runs and the engine needs its own compatible format
+#some values right one go between 0 to 1, such as the z values on "01" stuff, and the colour and z uv values of "04"
+
+#"01" means the structure of the element, "f" is for faces, "c" is element collision
+01 f 0/0/1 0/50/1 10/40/1 10/10/1 0 #01 f x/y/z ... face_id
+01 f 0/0/1 100/0/1 90/10/1 10/10/1 1
+01 f 0/50/1 100/50/1 90/40/1 10/40/1 2
+01 f 100/0/1 90/10/1 90/40/1 100/50/1 3
+
+01 c 0/0/1 0/50/1 100/50/1 100/0/1 #01 c x/y/z ...
+
+#"02" is basically the metadata of the element, it can be anything really
+02 name TestPoly #02 var var_value
+
+#"03" is transitional stuff, like the position, rotation, and other things
+03 pos 0/0/0 #03 pos px/py/pz
+03 rot 0/0/0 #03 rot rx/ry/rz
+
+#"04" is how the element is rendered, "uv" is its uv's faces (you can just copy the faces), "colour" or "color" is the colour of the face (fun fact, you can set it as "random" in any of the values and it gets funky >:3)
+04 uv 0/0/1 0/50/1 10/40/1 10/10/1 0 #04 uv ... face_id
+04 uv 0/0/1 100/0/1 90/10/1 10/10/1 1
+04 uv 0/50/1 100/50/1 90/40/1 10/40/1 2
+04 uv 100/0/1 90/10/1 90/40/1 100/50/1 3
+
+#also, the "RGBA" will actually be implemented later, right now its always RGBA no matter what you put it as, but it will break if you dont put anything there
+04 colour RGBA 1/0/0/1 0 #04 colour RGBA r/g/b/a face_id
+04 colour RGBA 0/1/0/1 1
+04 colour RGBA 0/0/1/1 2
+04 colour RGBA 1/0/1/1 3
+
+#more will be added later and expect bugs
