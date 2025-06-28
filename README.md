@@ -5,11 +5,11 @@ This page is for any and all Intersect Projects or Intersect Side Projects (some
 <h2>Current Projects in Development:</h2>
 
     ~ Intersect Engine V2
+
+    ~ PyAPI Minecraft Mod
  
 <h2>Projects Planned:</h2>
 
-
-    ~ PyAPI Minecraft Mod
 
     ~ Modularity PyAPI Mod
 
