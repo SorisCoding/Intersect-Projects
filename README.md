@@ -22,9 +22,9 @@ PyAPI is a Minecraft mod that will be designed to make modding much easier in th
 plus overcome the shortcomings of modding limitations,
 such as more efficient CPU usage and running the mod outside Minecraft.
 The way this will work is by running an app at the same time as Minecraft and the PyAPI mod will connect to said app. 
-When that happens, the app will handle all the processing of the mod itself and will only tell Minecraft what to do.
+When that happens, the app will handle all the processing of the mod itself and will only tell Minecraft what to do and render.
 
-This mod is still mostly a concept,
+This mod is still mostly in early dev,
 but it will hopefully make modding easier and allow for better, more cool mods in the future.
 
 <h3>Modularity</h3>
